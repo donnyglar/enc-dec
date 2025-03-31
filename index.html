@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption & Decryption (Version 2)</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #e3f2fd; text-align: center; }
+        .container { max-width: 600px; margin: auto; padding: 20px; background: white; box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); border-radius: 10px; }
+        input, button { margin: 10px; padding: 10px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; }
+        button { background-color: #007bff; color: white; cursor: pointer; border: none; transition: transform 0.2s, background-color 0.3s; }
+        button:hover { background-color: #0056b3; transform: scale(1.05); }
+        .error { color: red; font-weight: bold; }
+        .popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); opacity: 0; width: 80%; max-width: 500px; background: white; padding: 20px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3); border-radius: 10px; transition: transform 0.3s ease-out, opacity 0.3s ease-out; }
+        .popup.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .popup .close { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 20px; font-weight: bold; color: red; transition: transform 0.2s; }
+        .popup .close:hover { transform: scale(1.2); }
+        .popup h3 { margin-top: 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Encryption & Decryption</h2>
+        <label>Enter a message:</label>
+        <input type="text" id="message" placeholder="Type your message" required>
+        <br>
+        <label>Enter a shift value (1-25):</label>
+        <input type="number" id="shift" min="1" max="25" required>
+        <br>
+        <button onclick="encryptText()">Encrypt</button>
+        <button onclick="decryptText()">Decrypt</button>
+        <p id="result"></p>
+        <p>When Decrypting, please copy the Decrypted code and paste it to the message box</p>
+        <p class="error" id="error-msg"></p>
+        <button onclick="openPopup('discussion-popup')">Discussion Board</button>
+        <button onclick="openPopup('video-popup')">Videos</button>
+    </div>
+
+    <div id="discussion-popup" class="popup">
+        <span class="close" onclick="closePopup('discussion-popup')">&times;</span>
+        <h3>Discussion Board</h3>
+        <h4>How does encryption work?</h4>
+        <p>Encryption converts readable data into a coded format to prevent unauthorized access. Only authorized users with a key can decrypt and read it.</p>
+        <h4>What are the risks of weak encryption?</h4>
+        <p>Weak encryption algorithms can be cracked by hackers, exposing sensitive data such as passwords and financial information.</p>
+        <h4>Balancing security and accessibility</h4>
+        <p>Companies must balance strong encryption for security while ensuring authorized users can access data without excessive complexity.</p>
+    </div>
+
+    <div id="video-popup" class="popup">
+        <span class="close" onclick="closePopup('video-popup')">&times;</span>
+        <h3>Videos on Encryption</h3>
+        <p><a href="https://www.youtube.com/embed/9u6sovgxiH4" target="_blank">Introduction to Encryption</a></p>
+        <p><a href="https://www.youtube.com/embed/J1RmZZEkN0k" target="_blank">How Encryption Works</a></p>
+        <p><a href="hhttps://www.youtube.com/embed/4KiwoeDJFiA" target="_blank">Advanced Encryption Techniques</a></p>
+    </div>
+
+    <script>
+        function encryptText() {
+            let message = document.getElementById("message").value;
+            let shift = parseInt(document.getElementById("shift").value);
+            if (!message) {
+                document.getElementById("error-msg").innerText = "Please enter a message.";
+                return;
+            }
+            if (isNaN(shift) || shift < 1 || shift > 25) {
+                document.getElementById("error-msg").innerText = "Shift value must be between 1 and 25.";
+                return;
+            }
+            document.getElementById("error-msg").innerText = "";
+            let result = message.split('').map(char => {
+                if (char.match(/[a-z]/i)) {
+                    let code = char.charCodeAt(0);
+                    let base = code >= 65 && code <= 90 ? 65 : 97;
+                    return String.fromCharCode(((code - base + shift) % 26) + base);
+                }
+                return char;
+            }).join('');
+            document.getElementById("result").innerText = "Encrypted: " + result;
+        }
+
+        function decryptText() {
+            let message = document.getElementById("message").value;
+            let shift = parseInt(document.getElementById("shift").value);
+            if (!message) {
+                document.getElementById("error-msg").innerText = "Please enter a message.";
+                return;
+            }
+            if (isNaN(shift) || shift < 1 || shift > 25) {
+                document.getElementById("error-msg").innerText = "Shift value must be between 1 and 25.";
+                return;
+            }
+            document.getElementById("error-msg").innerText = "";
+            let result = message.split('').map(char => {
+                if (char.match(/[a-z]/i)) {
+                    let code = char.charCodeAt(0);
+                    let base = code >= 65 && code <= 90 ? 65 : 97;
+                    return String.fromCharCode(((code - base - shift + 26) % 26) + base);
+                }
+                return char;
+            }).join('');
+            document.getElementById("result").innerText = "Decrypted: " + result;
+        }
+
+        function openPopup(id) {
+            let popup = document.getElementById(id);
+            popup.style.display = "block";
+            setTimeout(() => popup.classList.add("show"), 10);
+        }
+
+        function closePopup(id) {
+            let popup = document.getElementById(id);
+            popup.classList.remove("show");
+            setTimeout(() => popup.style.display = "none", 300);
+        }
+    </script>
+</body>
+</html>
